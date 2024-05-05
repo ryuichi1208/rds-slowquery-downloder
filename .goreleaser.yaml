@@ -5,3 +5,5 @@ builds:
       - linux
       - windows
       - darwin
+      - openbsd
+

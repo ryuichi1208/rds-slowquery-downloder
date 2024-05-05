@@ -21,7 +21,7 @@ THE SOFTWARE.
 */
 package main
 
-import "github.com/ryuichi1208/mysql-slowquery-downloder/cmd"
+import "github.com/ryuichi1208/rds-slowquery-downloder/cmd"
 
 func main() {
 	cmd.Execute()

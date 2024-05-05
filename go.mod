@@ -1,4 +1,4 @@
-module github.com/ryuichi1208/mysql-slowquery-downloder
+module github.com/ryuichi1208/rds-slowquery-downloder
 
 go 1.22.2
 

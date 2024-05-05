@@ -143,14 +143,12 @@ func WriteLogData(path string, logData *string) error {
 	// 追記モードでファイルを開く
 	file, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		fmt.Println("Error creating file:", err)
 		return err
 	}
 	defer file.Close()
 
 	_, err = file.WriteString(*logData)
 	if err != nil {
-		fmt.Println("Error writing to file:", err)
 		return err
 	}
 

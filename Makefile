@@ -14,6 +14,10 @@ build:
 clean:
 	rm -f $(TARGET)
 
+.PHONY: test
+test:
+	go test ./...
+
 .PHONY: release
 release: deps-release
 	goreleaser --clean

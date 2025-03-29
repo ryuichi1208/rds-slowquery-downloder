@@ -27,25 +27,67 @@ func Do(cmd *cobra.Command, args []string) error {
 
 	logger.Info("Start mysql-slowquery-downloder")
 
-	aws, err := NewAWSClient(logger)
-	if err != nil {
-		return err
-	}
+	// クラウドプロバイダーの選択
+	provider := cmd.Flag("provider").Value.String()
+	instance := ""
+	var logList []string
+	var err error
 
-	instance := FilterInstance(aws, cmd.Flag("instance").Value.String())
+	switch provider {
+	case "aws":
+		var aws AWSClient
+		aws, err = NewAWSClient(logger)
+		if err != nil {
+			return err
+		}
 
-	logList, err := GetSlowQueryList(aws, instance)
-	if err != nil {
-		return err
-	}
+		instance = FilterInstance(aws, cmd.Flag("instance").Value.String())
+		logList, err = GetSlowQueryList(aws, instance)
+		if err != nil {
+			return err
+		}
 
-	for _, logFile := range logList {
-		logger.Debug(fmt.Sprintf("logFile: %s", logFile))
-	}
+		for _, logFile := range logList {
+			logger.Debug(fmt.Sprintf("logFile: %s", logFile))
+		}
 
-	DownloadSlowQueryLog(aws, instance, cmd.Flag("filter").Value.String(), logList)
-	if err != nil {
-		return err
+		_, err = DownloadSlowQueryLog(aws, instance, cmd.Flag("filter").Value.String(), logList)
+		if err != nil {
+			return err
+		}
+	case "gcp":
+		projectID := cmd.Flag("project").Value.String()
+		if projectID == "" {
+			return fmt.Errorf("GCP project ID is required")
+		}
+
+		credentials := cmd.Flag("credentials").Value.String()
+		var gcp GCPClient
+		gcp, err = NewGCPClient(logger, projectID, credentials)
+		if err != nil {
+			return err
+		}
+
+		instance = FilterInstance(gcp, cmd.Flag("instance").Value.String())
+		if instance == "" {
+			return fmt.Errorf("No matching instance found")
+		}
+
+		logList, err = GetSlowQueryList(gcp, instance)
+		if err != nil {
+			return err
+		}
+
+		for _, logFile := range logList {
+			logger.Debug(fmt.Sprintf("logFile: %s", logFile))
+		}
+
+		_, err = DownloadSlowQueryLog(gcp, instance, cmd.Flag("filter").Value.String(), logList)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("Unsupported provider: %s. Use 'aws' or 'gcp'", provider)
 	}
 
 	return nil
@@ -65,4 +107,7 @@ func init() {
 	rootCmd.Flags().String("instance", "i", "instance name")
 	rootCmd.Flags().String("filter", "f", "log filter string")
 	rootCmd.Flags().StringP("output", "o", "stdout", "output file path")
+	rootCmd.Flags().String("provider", "aws", "cloud provider (aws or gcp)")
+	rootCmd.Flags().String("project", "", "GCP project ID")
+	rootCmd.Flags().String("credentials", "", "path to GCP credentials file")
 }

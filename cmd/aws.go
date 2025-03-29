@@ -63,18 +63,18 @@ func GetSlowQueryList(a AWSClientInterface, instance string) ([]string, error) {
 func (a AWSClient) GetInstanceList() []string {
 	var instanceList []string
 	const maxInstances = 20
-	a.logger.Debug("Let's list up to %v DB instances.\n", maxInstances)
+	a.logger.Debug(fmt.Sprintf("Let's list up to %v DB instances.", maxInstances))
 	output, err := a.rdsClient.DescribeDBInstances(context.TODO(),
 		&rds.DescribeDBInstancesInput{MaxRecords: aws.Int32(maxInstances)})
 	if err != nil {
-		a.logger.Debug("Couldn't list DB instances: %v\n", err)
+		a.logger.Debug(fmt.Sprintf("Couldn't list DB instances: %v", err))
 		return instanceList
 	}
 	if len(output.DBInstances) == 0 {
 		a.logger.Debug("No DB instances found.")
 	} else {
 		for _, instance := range output.DBInstances {
-			a.logger.Error("DB instance %v\n", *instance.DBInstanceIdentifier)
+			a.logger.Error(fmt.Sprintf("DB instance %v", *instance.DBInstanceIdentifier))
 			instanceList = append(instanceList, *instance.DBInstanceIdentifier)
 		}
 	}
@@ -88,7 +88,7 @@ func (a AWSClient) GetSlowQueryList(instance string) ([]string, error) {
 	fmt.Println(instance)
 	req, err := a.rdsClient.DescribeDBInstances(context.Background(), &rds.DescribeDBInstancesInput{})
 	if err != nil {
-		a.logger.Error("Couldn't list DB instances: %v\n", err)
+		a.logger.Error(fmt.Sprintf("Couldn't list DB instances: %v", err))
 	}
 
 	if len(req.DBInstances) == 0 {

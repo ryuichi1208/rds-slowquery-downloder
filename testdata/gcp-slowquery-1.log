@@ -1,0 +1,28 @@
+# Time: 2023-05-10T12:30:15.000000Z
+# User@Host: app[app] @ [10.0.1.10]
+# Query_time: 2.500000  Lock_time: 0.010000 Rows_sent: 100  Rows_examined: 1000000
+use production;
+SET timestamp=1683721815;
+SELECT * FROM users WHERE id > 1000 AND last_login > '2023-01-01' ORDER BY created_at DESC LIMIT 100;
+
+# Time: 2023-05-10T14:00:05.000000Z
+# User@Host: batch[batch] @ [10.0.1.12]
+# Query_time: 3.200000  Lock_time: 1.100000 Rows_sent: 0  Rows_examined: 500000
+use production;
+SET timestamp=1683727205;
+UPDATE users SET last_login = NOW() WHERE id IN (SELECT user_id FROM sessions WHERE last_activity > NOW() - INTERVAL 1 HOUR);
+
+# Time: 2023-05-11T09:15:30.000000Z
+# User@Host: analytics[analytics] @ [10.0.1.14]
+# Query_time: 1.200000  Lock_time: 0.001000 Rows_sent: 5000  Rows_examined: 800000
+use production;
+SET timestamp=1683796530;
+SELECT COUNT(*) FROM orders WHERE status = 'pending' GROUP BY user_id;
+
+# Time: 2023-05-11T15:20:35.000000Z
+# User@Host: finance[finance] @ [10.0.1.16]
+# Query_time: 4.300000  Lock_time: 0.010000 Rows_sent: 90  Rows_examined: 3000000
+use finance;
+SET timestamp=1683818435;
+SELECT AVG(amount), DATE(created_at) FROM transactions WHERE created_at > NOW() - INTERVAL 90 DAY GROUP BY DATE(created_at) ORDER BY DATE(created_at);
+

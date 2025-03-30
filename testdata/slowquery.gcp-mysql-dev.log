@@ -1,0 +1,14 @@
+# Time: 2023-05-10T23:30:00.000000Z
+# User@Host: maintenance[maintenance] @ [10.0.1.13]
+# Query_time: 8.900000  Lock_time: 4.500000 Rows_sent: 0  Rows_examined: 5000000
+use production;
+SET timestamp=1683761400;
+DELETE FROM logs WHERE created_at < NOW() - INTERVAL 30 DAY;
+
+# Time: 2023-05-12T08:05:40.000000Z
+# User@Host: audit[audit] @ [10.0.1.17]
+# Query_time: 2.100000  Lock_time: 0.800000 Rows_sent: 0  Rows_examined: 150000
+use audit;
+SET timestamp=1683878740;
+INSERT INTO audit_logs (user_id, action, entity_id, created_at) SELECT user_id, 'login', id, created_at FROM sessions WHERE created_at > NOW() - INTERVAL 1 DAY;
+

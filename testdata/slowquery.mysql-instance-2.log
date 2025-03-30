@@ -1,0 +1,14 @@
+# Time: 2023-05-10T13:15:22.000000Z
+# User@Host: web[web] @ [10.0.1.11]
+# Query_time: 5.800000  Lock_time: 0.020000 Rows_sent: 250  Rows_examined: 2500000
+use production;
+SET timestamp=1683724522;
+SELECT articles.*, users.name FROM articles LEFT JOIN users ON users.id = articles.user_id WHERE articles.published_at > NOW() - INTERVAL 7 DAY;
+
+# Time: 2023-05-11T10:45:12.000000Z
+# User@Host: inventory[inventory] @ [10.0.1.15]
+# Query_time: 0.900000  Lock_time: 0.005000 Rows_sent: 120  Rows_examined: 250000
+use inventory;
+SET timestamp=1683801912;
+SELECT products.*, categories.name FROM products JOIN categories ON categories.id = products.category_id WHERE products.stock < 10 ORDER BY products.stock ASC;
+

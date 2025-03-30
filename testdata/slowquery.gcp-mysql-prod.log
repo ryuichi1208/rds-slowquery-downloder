@@ -1,0 +1,14 @@
+# Time: 2023-05-10T14:00:05.000000Z
+# User@Host: batch[batch] @ [10.0.1.12]
+# Query_time: 3.200000  Lock_time: 1.100000 Rows_sent: 0  Rows_examined: 500000
+use production;
+SET timestamp=1683727205;
+UPDATE users SET last_login = NOW() WHERE id IN (SELECT user_id FROM sessions WHERE last_activity > NOW() - INTERVAL 1 HOUR);
+
+# Time: 2023-05-11T15:20:35.000000Z
+# User@Host: finance[finance] @ [10.0.1.16]
+# Query_time: 4.300000  Lock_time: 0.010000 Rows_sent: 90  Rows_examined: 3000000
+use finance;
+SET timestamp=1683818435;
+SELECT AVG(amount), DATE(created_at) FROM transactions WHERE created_at > NOW() - INTERVAL 90 DAY GROUP BY DATE(created_at) ORDER BY DATE(created_at);
+

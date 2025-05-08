@@ -1,0 +1,31 @@
+name: Move stale PRs to Draft
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+env:
+  DAYS_THRESHOLD: 14
+
+jobs:
+  stale-prs:
+    timeout-minutes: 60
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get stale pull requests
+        run: |
+          current_date=$(date +%s)
+          threshold_date=$((current_date - DAYS_THRESHOLD * 86400))
+          prs=$(gh pr list --state open --json 'title,updatedAt,url' --jq '.[] | select(.updatedAt | fromdateiso8601 < '"$threshold_date"')')
+
+          # もし更新されていないPRがあれば、ドラフト状態に変更
+          echo "$prs" | jq -c -r '.url' | while read pr_url; do
+            gh pr ready --undo $pr_url
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,5 +1,7 @@
 # Changelog
 
+## [v0.0.6](https://github.com/ryuichi1208/rds-slowquery-downloder/compare/v0.0.5...v0.0.6) - 2025-12-29
+
 ## [v0.0.5](https://github.com/ryuichi1208/rds-slowquery-downloder/compare/v0.0.4...v0.0.5) - 2025-03-29
 
 ## [v0.0.4](https://github.com/ryuichi1208/rds-slowquery-downloder/compare/v0.0.3...v0.0.4) - 2024-05-06

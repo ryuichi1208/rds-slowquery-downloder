@@ -9,7 +9,7 @@ require (
 	github.com/spf13/cobra v1.8.0
 	cloud.google.com/go/cloudsqlconn v1.6.0
 	cloud.google.com/go/sql v1.6.0
-	google.golang.org/api v0.149.0
+	google.golang.org/api v0.266.0
 )
 
 require (

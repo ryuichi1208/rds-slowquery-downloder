@@ -3,9 +3,9 @@ module github.com/ryuichi1208/rds-slowquery-downloder
 go 1.22.2
 
 require (
-	github.com/aws/aws-sdk-go-v2 v1.26.1
-	github.com/aws/aws-sdk-go-v2/config v1.27.11
-	github.com/aws/aws-sdk-go-v2/service/rds v1.78.0
+	github.com/aws/aws-sdk-go-v2 v1.47.1
+	github.com/aws/aws-sdk-go-v2/config v1.33.6
+	github.com/aws/aws-sdk-go-v2/service/rds v1.129.1
 	github.com/spf13/cobra v1.8.0
 	cloud.google.com/go/cloudsqlconn v1.6.0
 	cloud.google.com/go/sql v1.6.0
